@@ -213,5 +213,22 @@ class CommWrapper {
 	String getReceivedData() {
          return new String(incoming.getData());
       }
+	  
+	public static void sendBasic(String ip, int port, String data){
+         try {
+         	System.out.println("\nSending to ip: " + ip + "\nport: " + port + "\ndata: " + data + "\n");
+            InetAddress addy = InetAddress.getByName(ip);
+            byte[] dataOut = data.getBytes();
+            DatagramPacket p = new DatagramPacket(dataOut, dataOut.length, addy, port);
+            DatagramSocket box = new DatagramSocket();
+            box.send(p);
+            box.close();
+         }
+            catch(IOException e) {
+               System.out.println("Couldnt Send BasicPacket:");
+               System.out.println(e);
+            }
+            
+      } 
    
 }
