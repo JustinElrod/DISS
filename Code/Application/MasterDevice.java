@@ -4,7 +4,7 @@
    //import biz.source_code.base64Coder.Base64Coder;
 
    class MasterDevice extends DissCore {
-      String[] chosenHostList = {"Dev1"}; ////Get from GUI
+      String[] chosenHostList = {"Dev2"}; ////Get from GUI
       boolean[] connected;
 
       static boolean good=false,
@@ -12,14 +12,27 @@
    
       public static void main(String[] args) {
          MasterDevice a = new MasterDevice();
-         System.out.println("---Finished Setting Up---");
-         if(good) {
-            a.prepServer(a.chosenHostList);
-            a.keyPrep();
-			for(int i=0;i<10000;i++);
-            a.submitPacks();
-			a.getServerOK();
-         }
+			System.out.println("Greeting Devices:");
+	        if(a.sayHello()>=1) {
+					System.out.println("---Finished Setting Up---");
+					good = true;
+					try{
+						Thread.sleep(5000L);
+					}catch(Exception e) {}
+				//	System.out.println("Getting Keys");
+				// getKeys();
+	// 				System.out.println("Sharing Device List");
+					a.distributeIPs();
+					a.prepServer(a.chosenHostList);
+					a.keyPrep();
+					try{
+						Thread.sleep(5000L);
+					}catch(Exception e) {}
+					a.submitPacks();
+					a.getServerOK();
+			  }
+         
+         
       }
    
    ///Auto SayHello on construction
@@ -27,16 +40,7 @@
         super();
 			addyList.openFiles();
 	      addyList.readFiles();
-			addyList.closeFiles();
-			System.out.println("Greeting Devices:");
-        if(sayHello()>=1) {
-				good = true;
-				// System.out.println("Getting Keys");
-// 				getKeys();
-// 				System.out.println("Sharing Device List");
-// 				distributeIPs();
-		  }
-	  
+			addyList.closeFiles();	  
 	  }
    
    //Tries to say hello to everyone except server(1st in addyBook).
@@ -127,7 +131,7 @@
 		}
 		
 		//send to all connected
-		CommWrapper.sendAllConnected(addyList.getIpList(false),"2::"+devList,"ACK2",connected);
+		CommWrapper.sendAllConnected(iplist,"2::"+devList,"ACK2",connected);
 	}
    
    
@@ -186,8 +190,10 @@
          System.out.println("Telling devices to send Pass characters to Server..");
       
          CommWrapper.sendAll(ips,"5::null","ACK5");
-         
-         System.out.println("Sending my pass characters to Server..");
+         try{
+				Thread.sleep(2000L);
+   		}catch(Exception e) {}      
+			System.out.println("Sending my pass characters to Server..");
       
          sendFirstCharPack();
          

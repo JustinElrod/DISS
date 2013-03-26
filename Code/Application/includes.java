@@ -23,8 +23,8 @@
         System.out.println("Requesting Server Time..");
         CommWrapper channel = new CommWrapper(addyList.getIpAddr("Server"),"4::null",SERVER_PORT);
         channel.setUpReceive(14);
-		channel.sendReceiveRespond("4::null","ACK4");
-		channel.closeConnection();
+			channel.sendReceiveRespond("4::null","ACK4");
+			channel.closeConnection();
          
 		 String reply = channel.getReceivedData();
          String[] spl = reply.split("::");
@@ -131,7 +131,7 @@
 	  
 	boolean addInfo(String data) {
 		String[] temp = data.split(":");
-		if(getIndex(temp[1]) >= 0) {
+		if(getIndex(temp[1]) < 0) {
 			hosts[NumDevices] = temp[0];
 			ips[NumDevices] = temp[1];
 			NumDevices++;
@@ -184,7 +184,7 @@
       
 	String getHostName(String ip){
          int x = getIndex(ip);
-		 if(x>0)
+		 if(x>=0)
 			return hosts[x];
 		else
 			return null;
@@ -209,7 +209,7 @@
             else if(i==1) {
                output+=ips[i];
 				}
-            else
+            else if(i!=0)
                output+=":"+ips[i];
          }		
          return output.split(":");		

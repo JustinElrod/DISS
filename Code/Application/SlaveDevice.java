@@ -166,8 +166,8 @@ class SlaveDevice extends DissCore{
        
          res = res[1].split(":");
          System.out.println("Seeds Received: " + res[0] + " " + res[1]);
-         a = Integer.parseInt(res[0],16);
-         b = Integer.parseInt(res[1],16);
+         a = Integer.parseInt(res[0].trim(),16);
+         b = Integer.parseInt(res[1].trim(),16);
          pack.setNewSeeds(a,b);
          pack.updateOffset(retrieveOffset(SLAVE_PORT));
 		System.out.println("Got Server Time");
