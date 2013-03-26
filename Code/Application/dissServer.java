@@ -1,9 +1,8 @@
    import java.util.*;
-   import ../CommWrapper.java;
-
+  
    public class dissServer{
       private static ArrayList<String> charPacks = new ArrayList<String>();
-      private static ArrayList<device> deviceList = new ArrayList<device>();
+      private static ArrayList<connectedDevice> deviceList = new ArrayList<connectedDevice>();
    
       public static synchronized void doFunction(int function, messageIn m){
       
@@ -41,19 +40,18 @@
             
             //get device list
             case 2:
-               for(int i=0;i<5;i++) {
-                  CommWrapper.sendBasic(m.getIP(), m.getPort(), "ACK2");  
-               }
+               CommWrapper.sendBasic(m.getIP(), m.getPort(), "ACK2");  
+               
                if(deviceList.size() == 0){
-                  deviceList.add(new device("<Master>", m.getIP()));
-                 // deviceList.add(new device("Dev1", "127.0.0.1"));
+                  deviceList.add(new connectedDevice("<Master>", m.getIP()));
+                 // deviceList.add(new connectedDevice("Dev1", "127.0.0.1"));
                }
                String data = m.getData();
                String[] devices = data.split("%");
                if(deviceList.size() - 1 < devices.length){
-                  for(int i = 0; i < devices.length; i++){
+                  for(int i = 1; i < devices.length; i++){
                      String[] params = devices[i].split(":");
-                     deviceList.add(new device(params[0], params[1]));
+                     deviceList.add(new connectedDevice(params[0], params[1]));
                   }
                  
                }
@@ -99,10 +97,10 @@
                   return;
                else{
                   validPW = pwValidation.validatePW(charPacks);
-                  // for(int i = 0; i < deviceList.size(); i++){
-                     // deviceList.get(i).setCharsIn(false);
-                  // }
-                  // charPacks.clear();
+                  for(int i = 0; i < deviceList.size(); i++){
+                     deviceList.get(i).setCharsIn(false);
+                  }
+                  charPacks.clear();
                }
             	
             	//SEND result to Master
@@ -118,7 +116,7 @@
             	
                CommWrapper reply = new CommWrapper(deviceList.get(0).getIP(), result, 6666);
                boolean acked = false;
-               while(!reply.sendTestAck("ACK7"));
+               while(!reply.sendTestAck("ACK7",true));
                reply.closeConnection();
             
                return;
@@ -134,14 +132,14 @@
             case 8:
                System.out.println("\nNegotiating seed with master.\n");
             	
-               for(int i = 0; i <= 4; i++){
-                  try{
-                     Thread.sleep(500);
-                  }
-                     catch(InterruptedException e){
-                     }
+               //for(int i = 0; i <= 4; i++){
+               //   try{
+               //      Thread.sleep(500);
+               //   }
+               //      catch(InterruptedException e){
+               //      }
                   CommWrapper.sendBasic(m.getIP(), m.getPort(), "ACK8");
-               }
+               //}
                	
             //generate mySeed
                Random b = new Random(System.currentTimeMillis());
@@ -155,7 +153,7 @@
             //send/Ack9 mySeed	
             	
                CommWrapper channel = new CommWrapper(m.getIP(),"9::"+hexSeed, 6666);
-               while(!channel.sendTestAck("ACK9"));
+               while(!channel.sendTestAck("ACK9", true));
                channel.closeConnection();
             
                long longSeed = Long.parseLong(m.getData(),16);

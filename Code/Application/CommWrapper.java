@@ -1,15 +1,15 @@
-package com.example.distributediss;
+//package com.example.distributediss;
 
    import java.io.*;
    import java.util.*;
    import java.net.*;
 
-class CommWrapper {
+   class CommWrapper {
       private final int TIMEOUT = 2000;
       private DatagramSocket box;
       private DatagramPacket outgoing,incoming;
    
-    CommWrapper() {
+      CommWrapper() {
          try {
             box = new DatagramSocket(0);
             box.setSoTimeout(TIMEOUT);
@@ -21,7 +21,7 @@ class CommWrapper {
          outgoing = null;
       }
       
-    CommWrapper(int sourcePort) {
+      CommWrapper(int sourcePort) {
          try {
             box = new DatagramSocket(sourcePort);
             box.setSoTimeout(TIMEOUT);
@@ -33,26 +33,26 @@ class CommWrapper {
          outgoing = null;
       }
    
-	///for sending first(designated port)
-    CommWrapper(String ip, String data, int destPort, int sourcePort) {
+   ///for sending first(designated port)
+      CommWrapper(String ip, String data, int destPort, int sourcePort) {
          this(sourcePort);
          setUpSend(ip,data,destPort);
       }
    
-	///for sending first(random port)
-    CommWrapper(String ip, String data, int destPort) {
+   ///for sending first(random port)
+      CommWrapper(String ip, String data, int destPort) {
          this(ip,data,destPort,0);
       }
    
-	///for receiving first
-    CommWrapper(int expectedLength, int sourcePort) {
+   ///for receiving first
+      CommWrapper(int expectedLength, int sourcePort) {
          this(sourcePort);
          setUpReceive(expectedLength);
       }
    
-	
-	//both packets must be set up
-    boolean sendTestAck(String ack, boolean timeout) {
+   
+   //both packets must be set up
+      boolean sendTestAck(String ack, boolean timeout) {
          this.send();
          this.receive(timeout);
          if(Arrays.equals(incoming.getData(),ack.getBytes()))
@@ -61,30 +61,30 @@ class CommWrapper {
             return false;
       }
    
-    void receiveRespond(String msgR, String msgS, boolean strict) {
-		if(strict) {
-			while(this.getReceivedData().compareTo(msgR) != 0)
-				this.receive(false);
-		}
-		else {
-			while((getReceivedData().charAt(0))!=(msgR.charAt(0)))
-				this.receive(false);
-		}
-		//System.out.println(channel.getReceivedData());
-		this.setUpSend(msgS);
-		this.send();
-	}
-	
-	void sendReceiveRespond(String msgR, String msgS) {
-		while((getReceivedData().charAt(0)) != (msgR.charAt(0))) {
-			this.send();
-			this.receive(true);
-		}
-		this.setUpSend(msgS);
-		this.send();
-	}
-	
-	static void sendAll(String[] ipList, String data, String ack) {
+      void receiveRespond(String msgR, String msgS, boolean strict) {
+         if(strict) {
+            while(this.getReceivedData().compareTo(msgR) != 0)
+               this.receive(false);
+         }
+         else {
+            while((getReceivedData().charAt(0))!=(msgR.charAt(0)))
+               this.receive(false);
+         }
+      //System.out.println(channel.getReceivedData());
+         this.setUpSend(msgS);
+         this.send();
+      }
+   
+      void sendReceiveRespond(String msgR, String msgS) {
+         while((getReceivedData().charAt(0)) != (msgR.charAt(0))) {
+            this.send();
+            this.receive(true);
+         }
+         this.setUpSend(msgS);
+         this.send();
+      }
+   
+      static void sendAll(String[] ipList, String data, String ack) {
          int numHosts = ipList.length;
          CommWrapper[] channel = new CommWrapper[numHosts];
          boolean[] done = new boolean[ipList.length];
@@ -113,24 +113,24 @@ class CommWrapper {
             channel[i].closeConnection();
       }
    
-	static void sendAllConnected(String[] ipList, String data, String ack,boolean[] connected) {
+      static void sendAllConnected(String[] ipList, String data, String ack,boolean[] connected) {
          int numHosts = ipList.length;
          CommWrapper[] channel = new CommWrapper[numHosts];
          boolean[] done = new boolean[numHosts];
       
       //set up and try to send each packet
          for(int i=0; i<numHosts; i++) {
-				done[i] = false;
-				if(i==0) {
-					channel[i] = new CommWrapper(ipList[i],data,4000);
-					channel[i].setUpReceive(4);
-					done[i] = channel[i].sendTestAck(ack,true);
-				}
-				else if(connected[i]) {
-					channel[i] = new CommWrapper(ipList[i],data,5555);
-					channel[i].setUpReceive(4);
-					done[i] = channel[i].sendTestAck(ack,false);
-				}
+            done[i] = false;
+            if(i==0) {
+               channel[i] = new CommWrapper(ipList[i],data,4000);
+               channel[i].setUpReceive(4);
+               done[i] = channel[i].sendTestAck(ack,true);
+            }
+            else if(connected[i]) {
+               channel[i] = new CommWrapper(ipList[i],data,5555);
+               channel[i].setUpReceive(4);
+               done[i] = channel[i].sendTestAck(ack,false);
+            }
          }
          
        //re-send until all have been acknowledged
@@ -147,13 +147,13 @@ class CommWrapper {
          
        //close the sockets
          for(int i=0; i<numHosts; i++) {
-     			if(connected[i])      
-			   	channel[i].closeConnection();
-  			}    
-		}
+            if(connected[i])      
+               channel[i].closeConnection();
+         }    
+      }
    
-	
-	void setUpSend(String ip, String data, int destPort) {      		
+   
+      void setUpSend(String ip, String data, int destPort) {      		
          byte[] buffer = data.getBytes();
          try {
             InetAddress destIP = InetAddress.getByName(ip);
@@ -165,25 +165,25 @@ class CommWrapper {
       
       
       }
-	
-	//if a packet has been received
-	void setUpSend(String data) {
-		setUpSend(incoming.getAddress().toString().substring(1),data,incoming.getPort());
-		outgoing.setData(data.getBytes());
-	}
+   
+   //if a packet has been received
+      void setUpSend(String data) {
+         setUpSend(incoming.getAddress().toString().substring(1),data,incoming.getPort());
+         outgoing.setData(data.getBytes());
+      }
      
-	void setUpReceive(int expectedLength) {
+      void setUpReceive(int expectedLength) {
          byte[] buff = new byte[expectedLength];
          incoming = new DatagramPacket(buff, buff.length);
-    }
+      }
    
-    void closeConnection() {
+      void closeConnection() {
          box.disconnect();
          box.close();
          while(!box.isBound());
       }
    
-    void send(){
+      void send(){
          try {
             box.send(outgoing);
          }
@@ -193,30 +193,30 @@ class CommWrapper {
             
       }
    
-    void receive(boolean timeout) {
+      void receive(boolean timeout) {
          try {
-			if(!timeout)
-				box.setSoTimeout(0);
-			while(Arrays.equals(incoming.getData(),new byte[incoming.getLength()]))
-				box.receive(incoming);
-			box.setSoTimeout(TIMEOUT);
-		 }
+            if(!timeout)
+               box.setSoTimeout(0);
+            while(Arrays.equals(incoming.getData(),new byte[incoming.getLength()]))
+               box.receive(incoming);
+            box.setSoTimeout(TIMEOUT);
+         }
             catch(IOException e) {
                System.out.println("Couldnt Recieve: "+ e);
             }
       }
    
-    String getReceivedIP() {
-		return incoming.getAddress().toString().substring(1);
-	}
-	
-	String getReceivedData() {
+      String getReceivedIP() {
+         return incoming.getAddress().toString().substring(1);
+      }
+   
+      String getReceivedData() {
          return new String(incoming.getData());
       }
-	  
-	public static void sendBasic(String ip, int port, String data){
+     
+      public static void sendBasic(String ip, int port, String data){
          try {
-         	System.out.println("\nSending to ip: " + ip + "\nport: " + port + "\ndata: " + data + "\n");
+            System.out.println("\nSending to ip: " + ip + "\nport: " + port + "\ndata: " + data + "\n");
             InetAddress addy = InetAddress.getByName(ip);
             byte[] dataOut = data.getBytes();
             DatagramPacket p = new DatagramPacket(dataOut, dataOut.length, addy, port);
@@ -231,4 +231,4 @@ class CommWrapper {
             
       } 
    
-}
+   }
