@@ -57,7 +57,7 @@
 		 	connected[0] = true;
          try {
             for(int i=1; i<list.length; i++) {
-               channel[i].setUpSend(list[i], "1::", SLAVE_PORT);
+               channel[i].setUpSend(list[i], "1::" + null, SLAVE_PORT);
                channel[i].setUpReceive(4);
                connected[i] = channel[i].sendTestAck("ACK1",true);
             }

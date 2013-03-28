@@ -2,10 +2,10 @@
    import java.io.*;   
    
 	//in main: Listen
-   public class udpIn extends Thread{ 
+   public class SlaveUdpIn extends Thread{ 
       String type; //server or slave
 	  	  
-	  public udpIn(String type){
+	  public SlaveUdpIn(String type){
 		this.type = type;
 		}
 	  
@@ -13,7 +13,7 @@
          while(true){
             DatagramSocket dSocket = null;            
             try {
-               dSocket = new DatagramSocket(4000);
+               dSocket = new DatagramSocket(5555);
             } 
                catch (IOException e) {
                   System.out.println("Could not listen on port: 4000" + e);

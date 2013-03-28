@@ -7,7 +7,7 @@
       final int SERVER_PORT = 4000;
       final int SLAVE_PORT = 5555;
       final int MASTER_PORT = 6666;
-	  final int SERVER_RESPONSE_THRESHOLD = 500;
+      final int SERVER_RESPONSE_THRESHOLD = 500;
       DatagramSocket mailbox;
       AddressBook addyList;
       CharPack pack;
@@ -20,13 +20,13 @@
       }
       
       long getServerTime(int port){
-        System.out.println("Requesting Server Time..");
-        CommWrapper channel = new CommWrapper(addyList.getIpAddr("Server"),"4::null",SERVER_PORT);
-        channel.setUpReceive(14);
-			channel.sendReceiveRespond("4::null","ACK4");
-			channel.closeConnection();
+         System.out.println("Requesting Server Time..");
+         CommWrapper channel = new CommWrapper(addyList.getIpAddr("Server"),"4::null",SERVER_PORT);
+         channel.setUpReceive(14);
+         channel.sendReceiveRespond("4::null","ACK4");
+         channel.closeConnection();
          
-		 String reply = channel.getReceivedData();
+         String reply = channel.getReceivedData();
          String[] spl = reply.split("::");
       	//spl[1] = spl[1].substring(0,8);
          return Long.parseLong(spl[1],16);
@@ -49,22 +49,22 @@
    
       void sendCharPack(){
          CommWrapper submission = new CommWrapper(addyList.getIpAddr("Server"), "6::"+pack.getPack(), SERVER_PORT);
-    		submission.setUpReceive(4);     
-			boolean done = false;
+         submission.setUpReceive(4);     
+         boolean done = false;
          while(!done) {      
             done = submission.sendTestAck("ACK6",true);
          }
-			submission.closeConnection();    
+         submission.closeConnection();    
       }
       
-	  void sendFirstCharPack(){
+      void sendFirstCharPack(){
          CommWrapper submission = new CommWrapper(addyList.getIpAddr("Server"), "0::"+pack.getPack(), SERVER_PORT);
          submission.setUpReceive(4);
-			boolean done = false;
+         boolean done = false;
          while(!done) {      
-            done = submission.sendTestAck("ACK6",true);
+            done = submission.sendTestAck("ACK0",true);
          } 
-			submission.closeConnection();
+         submission.closeConnection();
       }
    
    
@@ -74,22 +74,22 @@
 ///String getHostName(String ip)
    class AddressBook {
       
-	  
-	  class key {
-			byte[] kc = new byte[44];		
-	  }
-	  private Scanner y1,y2,y3; 
+     
+      class key {
+         byte[] kc = new byte[44];		
+      }
+      private Scanner y1,y2,y3; 
       int NumDevices;
       String[] hosts = new String[10];
       String[] ips = new String[10];
       key[] keybook = new key[10];
       
-	public AddressBook() {
+      public AddressBook() {
         
-	 }
+      }
      
-	//	 
-	void openFiles(){
+   //	 
+      void openFiles(){
          try{
             y1 = new Scanner(new File("HostFile.txt"));
          }
@@ -102,7 +102,7 @@
             catch(Exception e){
                System.out.println("Could not open IP addresses file");
             }
-		try{
+         try{
             y3 = new Scanner(new File("KeyFile.txt"));
          }
             catch(Exception e){
@@ -110,89 +110,89 @@
             }
       }
       
-	void readFiles(){
+      void readFiles(){
          int i=0;
          while(y1.hasNextLine() && y2.hasNextLine()) {
             hosts[i] = y1.next();
             ips[i] = y2.next();
-				//keybook[i].kc = y3.next().getBytes();
-						
+         	//keybook[i].kc = y3.next().getBytes();
+         			
             i++;
          }
          NumDevices=i;
       		
       }
       
-	void closeFiles(){
+      void closeFiles(){
          y1.close();
          y2.close();
-		 y3.close();
+         y3.close();
       }
-	  
-	boolean addInfo(String data) {
-		String[] temp = data.split(":");
-		if(getIndex(temp[1]) < 0) {
-			hosts[NumDevices] = temp[0];
-			ips[NumDevices] = temp[1];
-			NumDevices++;
-			return true;
-		}
-		else 
-			return false;
-	}
-	
-	int getIndex(String ip) {
-		for(int i=0; i<NumDevices; i++) {
+     
+      boolean addInfo(String data) {
+         String[] temp = data.split(":");
+         if(getIndex(temp[1]) < 0) {
+            hosts[NumDevices] = temp[0];
+            ips[NumDevices] = temp[1];
+            NumDevices++;
+            return true;
+         }
+         else 
+            return false;
+      }
+   
+      int getIndex(String ip) {
+         for(int i=0; i<NumDevices; i++) {
             if(ips[i].compareTo(ip) == 0) 
                return i;
          }
          return -1;
-	  }
-	///
-	
-	/// 
-	void storeNewKey(String ip,byte[] key) {
-		int x = getIndex(ip);
-		keybook[x].kc = key;
-	  }
-	  
-	byte[] keyByIp(String ip) {
-		for(int i=0; i<NumDevices; i++) {
+      }
+   ///
+   
+   /// 
+      void storeNewKey(String ip,byte[] key) {
+         int x = getIndex(ip);
+         keybook[x].kc = key;
+      }
+     
+      byte[] keyByIp(String ip) {
+         for(int i=0; i<NumDevices; i++) {
             if(ips[i].compareTo(ip) == 0) 
                return keybook[i].kc;
          }
          return null;
-	  }
-	  
-	byte[] keyByName(String host) {
-		for(int i=0; i<NumDevices; i++) {
+      }
+     
+      byte[] keyByName(String host) {
+         for(int i=0; i<NumDevices; i++) {
             if(hosts[i].compareTo(host) == 0) 
                return keybook[i].kc;
          }
          return null;
       }
     /// 
-	  
-	/// 
-	String getIpAddr(String host){
-        for(int i=0; i<NumDevices; i++) {
+     
+   /// 
+      String getIpAddr(String host){
+         for(int i=0; i<NumDevices; i++) {
             if(hosts[i].compareTo(host) == 0) 
                return ips[i];
          }
          return null;
       }
       
-	String getHostName(String ip){
+      String getHostName(String ip){
          int x = getIndex(ip);
-		 if(x>=0)
-			return hosts[x];
-		else
-			return null;
-	  }
+         if(x>=0)
+            return hosts[x];
+         else
+            return null;
+      }
     ///
-	 
-	///
-	String[] getIpList(String[] hostList) {
+    
+   ///
+      String[] getIpList(String[] hostList) {
          String[] ips = new String[hostList.length];
          for(int i=0;i<hostList.length;i++) {
             ips[i] = this.getIpAddr(hostList[i]);
@@ -200,22 +200,22 @@
          return ips;
       }
       
-	String[] getIpList(boolean serverIncluded) {
+      String[] getIpList(boolean serverIncluded) {
          String output = "";
          for(int i=0;i<NumDevices;i++) {
             if(serverIncluded&&i==0){
-					output+=ips[i]+":";
-				}
+               output+=ips[i]+":";
+            }
             else if(i==1) {
                output+=ips[i];
-				}
+            }
             else if(i!=0)
                output+=":"+ips[i];
          }		
          return output.split(":");		
       }
-	///
-	  
+   ///
+     
    }
 
 ///Constructing auto loads old seeds
@@ -223,7 +223,7 @@
 ///after both have been completed chars can be added
    class CharPack {
    //variables:
-      private
+      
       long Offset;
       String Pack;
       int[] OldCipher = new int[94];
@@ -232,8 +232,7 @@
       int[] newDummy = new int[30];
       int seedA, seedB, seedAp, seedBp;
    
-      public
-      CharPack() {
+      public CharPack() {
          Pack = "";
          getOldSeeds();
       //setNewSeeds( 5, 4);	
@@ -347,5 +346,9 @@
             return Pack;
          else
             return "null";
+      }
+     
+      void clearPack(){
+         Pack = "";
       }
    }

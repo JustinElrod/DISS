@@ -1,13 +1,13 @@
    import java.io.*;
    import java.net.*;
 
-   public class packetHandler implements Runnable{
+   public class slavePacketHandler implements Runnable{
    
       private DatagramPacket p;
    
-      public packetHandler(DatagramPacket p){
+      public slavePacketHandler(DatagramPacket p){
          this.p = p;
-		}
+      }
    
       public void run(){
          String message = new String(p.getData(), 0, p.getLength());
@@ -19,6 +19,6 @@
 				+ ":\n" + message + "\n------IN-----\n");      
 			String d = messageParts[1];
          messageIn m = new messageIn(f, from, d, p.getPort());
-         dissServer.doFunction(f, m);
+         dissSlave.doFunction(f, m);
       }
    }

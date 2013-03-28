@@ -10,7 +10,7 @@
          	
          	//setup password
             case 0:
-               CommWrapper.sendBasic(m.getIP(), m.getPort(), "ACK6");
+               CommWrapper.sendBasic(m.getIP(), m.getPort(), "ACK0");
                System.out.println("\nSetting up Password.");
                for(int i = 0; i < deviceList.size(); i++){
                   if(m.getIP().compareTo(deviceList.get(i).getIP()) == 0){
@@ -44,7 +44,6 @@
                
                if(deviceList.size() == 0){
                   deviceList.add(new connectedDevice("<Master>", m.getIP()));
-                 // deviceList.add(new connectedDevice("Dev1", "127.0.0.1"));
                }
                String data = m.getData();
                String[] devices = data.split("%");
@@ -115,6 +114,7 @@
                }
             	
                CommWrapper reply = new CommWrapper(deviceList.get(0).getIP(), result, 6666);
+               reply.setUpReceive(4);
                boolean acked = false;
                while(!reply.sendTestAck("ACK7",true));
                reply.closeConnection();
@@ -138,7 +138,7 @@
                //   }
                //      catch(InterruptedException e){
                //      }
-                  CommWrapper.sendBasic(m.getIP(), m.getPort(), "ACK8");
+               CommWrapper.sendBasic(m.getIP(), m.getPort(), "ACK8");
                //}
                	
             //generate mySeed
@@ -165,6 +165,8 @@
             
                //deviceList.get(0).setSeed(theirSeed);
             
+               return;
+         	
             default:
                System.out.println("Error: unknown function.");
          			

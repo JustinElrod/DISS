@@ -2,10 +2,10 @@
    import java.io.*;   
    
 	//in main: Listen
-   public class udpIn extends Thread{ 
+   public class ServerUdpIn extends Thread{ 
       String type; //server or slave
 	  	  
-	  public udpIn(String type){
+	  public ServerUdpIn(String type){
 		this.type = type;
 		}
 	  

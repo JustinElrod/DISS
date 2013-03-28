@@ -1,13 +1,13 @@
    import java.io.*;
    import java.net.*;
 
-   public class packetHandler implements Runnable{
+   public class serverPacketHandler implements Runnable{
    
       private DatagramPacket p;
    
-      public packetHandler(DatagramPacket p){
+      public serverPacketHandler(DatagramPacket p){
          this.p = p;
-		}
+      }
    
       public void run(){
          String message = new String(p.getData(), 0, p.getLength());

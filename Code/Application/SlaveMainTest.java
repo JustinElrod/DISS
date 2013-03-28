@@ -1,8 +1,8 @@
    import java.net.*;
    import java.io.*;
    
-   public class ServerMainTest{
+   public class SlaveMainTest{
       public static void main(String[] args){
-         new ServerUdpIn("server").start();
+         new SlaveUdpIn("slave").start();
       }
    } 
